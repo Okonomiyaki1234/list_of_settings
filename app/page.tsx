@@ -21,8 +21,8 @@ export default function Home() {
             このページから各種情報管理ページへアクセスできます。
           </p>
           <ul style={{ lineHeight: 2 }}>
-            <li><Link href="/characters">キャラクター一覧</Link></li>
-            <li><Link href="/history">イベント（歴史）一覧</Link></li>
+            <li><Link href="/main/characters">キャラクター一覧</Link></li>
+            <li><Link href="/main/history">イベント（歴史）一覧</Link></li>
             <li><Link href="/items">アイテム一覧</Link></li>
             <li><Link href="/story">ストーリー一覧</Link></li>
             <li><Link href="/glossary">用語集</Link></li>

@@ -1,22 +1,6 @@
-import Link from "next/link";
 
-// 仮データ（DB未接続）
-const characters = [
-  {
-    id: 1,
-    surname: "律",
-    name: "一郎",
-    sou: "陽",
-    image: null,
-  },
-  {
-    id: 2,
-    surname: "和泉",
-    name: "美咲",
-    sou: "陰",
-    image: null,
-  },
-];
+import Link from "next/link";
+import { characters } from "./charactersData";
 
 export default function CharactersList() {
   return (
