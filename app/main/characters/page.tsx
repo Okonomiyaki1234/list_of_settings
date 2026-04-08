@@ -1,8 +1,19 @@
 
-import Link from "next/link";
-import { characters } from "./charactersData";
 
-export default function CharactersList() {
+import Link from "next/link";
+import { supabase } from "../../supabaseClient";
+
+export default async function CharactersList() {
+  const { data: characters, error } = await supabase
+    .from("characters")
+    .select("id, surname, name, sou, image");
+  if (error) {
+    return <div>データ取得エラー: {error.message}</div>;
+  }
+  if (!characters) {
+    return <div>キャラクターが見つかりません。</div>;
+  }
+
   return (
     <div style={{ padding: "2rem" }}>
       <h2>キャラクター一覧</h2>
@@ -16,7 +27,7 @@ export default function CharactersList() {
           </tr>
         </thead>
         <tbody>
-          {characters.map((ch) => (
+          {characters.map((ch: any) => (
             <tr key={ch.id}>
               <td>{ch.surname}</td>
               <td>

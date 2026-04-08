@@ -1,9 +1,18 @@
 import Link from "next/link";
-import { events } from "../history/eventsData";
 
-export default function StoryList() {
-  // isStoryがtrueのイベントのみ抽出
-  const stories = events.filter(e => e.isStory);
+import { supabase } from "../../supabaseClient";
+
+export default async function StoryList() {
+  const { data: stories, error } = await supabase
+    .from("events")
+    .select("id, title, yomi")
+    .eq("is_story", true);
+  if (error) {
+    return <div>データ取得エラー: {error.message}</div>;
+  }
+  if (!stories) {
+    return <div>ストーリーが見つかりません。</div>;
+  }
   return (
     <div style={{ padding: "2rem" }}>
       <h2>ストーリー一覧</h2>
@@ -15,7 +24,7 @@ export default function StoryList() {
           </tr>
         </thead>
         <tbody>
-          {stories.map((story) => (
+          {stories.map((story: any) => (
             <tr key={story.id}>
               <td>
                 <Link href={`/main/story/${story.id}`}>{story.title}</Link>

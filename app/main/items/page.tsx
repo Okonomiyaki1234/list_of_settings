@@ -1,7 +1,18 @@
-import Link from "next/link";
-import { items } from "./itemsData";
 
-export default function ItemsList() {
+import Link from "next/link";
+import { supabase } from "../../supabaseClient";
+
+export default async function ItemsList() {
+  const { data: items, error } = await supabase
+    .from("items")
+    .select("id, name, yomi");
+  if (error) {
+    return <div>データ取得エラー: {error.message}</div>;
+  }
+  if (!items) {
+    return <div>アイテムが見つかりません。</div>;
+  }
+
   return (
     <div style={{ padding: "2rem" }}>
       <h2>アイテム・遺物一覧</h2>
@@ -13,7 +24,7 @@ export default function ItemsList() {
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
+          {items.map((item: any) => (
             <tr key={item.id}>
               <td>
                 <Link href={`/main/items/${item.id}`}>{item.name}</Link>

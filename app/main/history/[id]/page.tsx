@@ -1,17 +1,24 @@
 import Link from "next/link";
 
-import { events } from "../eventsData";
 
-function getEventById(id: string | number) {
-  return events.find((e) => e.id === Number(id));
+import { supabase } from "@/app/supabaseClient";
+
+async function getEventById(id: string | number) {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return data;
 }
 
 interface Params {
   id: string;
 }
 
-export default function EventDetail({ params }: { params: Params }) {
-  const event = getEventById(params.id);
+export default async function EventDetail({ params }: { params: Params }) {
+  const event = await getEventById(params.id);
   if (!event) {
     return <div>イベントが見つかりません。</div>;
   }
@@ -22,8 +29,8 @@ export default function EventDetail({ params }: { params: Params }) {
       <p><b>説明：</b>{event.description}</p>
       <p><b>登場キャラクター：</b>{event.characters?.join(", ") || "-"}</p>
       <p><b>場所：</b>{event.places?.join(", ") || "-"}</p>
-      <p><b>直前の前提作品：</b>{event.prevWork || "-"}</p>
-      <p><b>直後の続編作品：</b>{event.nextWork || "-"}</p>
+      <p><b>直前の前提作品：</b>{event.prev_work || "-"}</p>
+      <p><b>直後の続編作品：</b>{event.next_work || "-"}</p>
       <p style={{ marginTop: "2rem" }}>
         <Link href="/main/history">← 一覧に戻る</Link>
       </p>
@@ -31,6 +38,9 @@ export default function EventDetail({ params }: { params: Params }) {
   );
 }
 
+
 export async function generateStaticParams() {
-  return events.map((e) => ({ id: String(e.id) }));
+  const { data, error } = await supabase.from("events").select("id");
+  if (error || !data) return [];
+  return data.map((e: any) => ({ id: String(e.id) }));
 }

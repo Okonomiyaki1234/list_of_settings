@@ -1,16 +1,23 @@
 import Link from "next/link";
-import { items } from "../itemsData";
 
-function getItemById(id: string | number) {
-  return items.find((i) => i.id === Number(id));
+import { supabase } from "@/app/supabaseClient";
+
+async function getItemById(id: string | number) {
+  const { data, error } = await supabase
+    .from("items")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return data;
 }
 
 interface Params {
   id: string;
 }
 
-export default function ItemDetail({ params }: { params: Params }) {
-  const item = getItemById(params.id);
+export default async function ItemDetail({ params }: { params: Params }) {
+  const item = await getItemById(params.id);
   if (!item) {
     return <div>アイテムが見つかりません。</div>;
   }
@@ -28,5 +35,7 @@ export default function ItemDetail({ params }: { params: Params }) {
 }
 
 export async function generateStaticParams() {
-  return items.map((i) => ({ id: String(i.id) }));
+  const { data, error } = await supabase.from("items").select("id");
+  if (error || !data) return [];
+  return data.map((i: any) => ({ id: String(i.id) }));
 }

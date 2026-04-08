@@ -1,17 +1,24 @@
 import Link from "next/link";
 
-import { characters } from "../charactersData";
 
-function getCharacterById(id: string | number) {
-  return characters.find((c) => c.id === Number(id));
+import { supabase } from "@/app/supabaseClient";
+
+async function getCharacterById(id: string | number) {
+  const { data, error } = await supabase
+    .from("characters")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return data;
 }
 
 interface Params {
   id: string;
 }
 
-export default function CharacterDetail({ params }: { params: Params }) {
-  const character = getCharacterById(params.id);
+export default async function CharacterDetail({ params }: { params: Params }) {
+  const character = await getCharacterById(params.id);
   if (!character) {
     return <div>キャラクターが見つかりません。</div>;
   }
@@ -26,7 +33,7 @@ export default function CharacterDetail({ params }: { params: Params }) {
       <p><b>誕生日：</b>{character.birthday}</p>
       <p><b>命日：</b>{character.deathday}</p>
       <p><b>性別：</b>{character.gender}</p>
-      <p><b>関係者：</b>{character.relations?.map(r => `${r.name}（${r.relation}）`).join(", ") || "-"}</p>
+      <p><b>関係者：</b>{Array.isArray(character.relations) ? character.relations.map((r: any) => `${r.name}（${r.relation}）`).join(", ") : "-"}</p>
       <p><b>関連項目：</b>{character.related?.join(", ") || "-"}</p>
       <p><b>説明：</b>{character.description}</p>
       <p><b>画像：</b>{character.image ? <img src={character.image} alt="" width={80} /> : "-"}</p>
@@ -38,6 +45,9 @@ export default function CharacterDetail({ params }: { params: Params }) {
   );
 }
 
+
 export async function generateStaticParams() {
-  return characters.map((c) => ({ id: String(c.id) }));
+  const { data, error } = await supabase.from("characters").select("id");
+  if (error || !data) return [];
+  return data.map((c: any) => ({ id: String(c.id) }));
 }
