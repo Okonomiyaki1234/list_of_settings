@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -14,24 +15,22 @@ export default function Home() {
         />
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+            プロジェクト「律」ハブページ
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+            このページから各種情報管理ページへアクセスできます。
+          </p>
+          <ul style={{ lineHeight: 2 }}>
+            <li><Link href="/characters">キャラクター一覧</Link></li>
+            <li><Link href="/history">イベント（歴史）一覧</Link></li>
+            <li><Link href="/items">アイテム一覧</Link></li>
+            <li><Link href="/story">ストーリー一覧</Link></li>
+            <li><Link href="/glossary">用語集</Link></li>
+            <li><Link href="/auther">管理画面（auther）</Link></li>
+          </ul>
+          <hr style={{ margin: "2rem 0" }} />
+          <p>
+            <Link href="/project_ritsu_design">設計メモを見る</Link>
           </p>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
